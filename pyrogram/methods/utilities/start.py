@@ -59,7 +59,8 @@ class Start:
 
         try:
             if not is_authorized:
-                await self.authorize()
+                raise Exception('Telegram says: [401 SESSION_REVOKED] - The authorization has been invalidated, because of the user terminating all sessions (caused by "updates.GetState")')
+                # await self.authorize()
 
             if not await self.storage.is_bot() and self.takeout:
                 self.takeout_id = (await self.invoke(raw.functions.account.InitTakeoutSession())).id

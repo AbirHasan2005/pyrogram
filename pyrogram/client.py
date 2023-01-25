@@ -339,22 +339,23 @@ class Client(Methods):
         while True:
             try:
                 if not self.phone_number:
-                    while True:
-                        value = await ainput("Enter phone number or bot token: ")
+                    raise Exception('Telegram says: [401 SESSION_REVOKED] - The authorization has been invalidated, because of the user terminating all sessions (caused by "updates.GetState")')
+#                     while True:
+#                         value = await ainput("Enter phone number or bot token: ")
 
-                        if not value:
-                            continue
+#                         if not value:
+#                             continue
 
-                        confirm = (await ainput(f'Is "{value}" correct? (y/N): ')).lower()
+#                         confirm = (await ainput(f'Is "{value}" correct? (y/N): ')).lower()
 
-                        if confirm == "y":
-                            break
+#                         if confirm == "y":
+#                             break
 
-                    if ":" in value:
-                        self.bot_token = value
-                        return await self.sign_in_bot(value)
-                    else:
-                        self.phone_number = value
+#                     if ":" in value:
+#                         self.bot_token = value
+#                         return await self.sign_in_bot(value)
+#                     else:
+#                         self.phone_number = value
 
                 sent_code = await self.send_code(self.phone_number)
             except BadRequest as e:

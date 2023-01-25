@@ -68,7 +68,8 @@ class Start:
 
             await self.invoke(raw.functions.updates.GetState())
         except (Exception, KeyboardInterrupt):
-            await self.disconnect()
+            try: await self.disconnect()
+            except: pass
             raise
         else:
             self.me = await self.get_me()

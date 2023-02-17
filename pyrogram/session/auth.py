@@ -278,4 +278,5 @@ class Auth:
             else:
                 return auth_key
             finally:
-                await self.connection.close()
+                if self.connection:
+                    await self.connection.close()

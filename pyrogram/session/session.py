@@ -29,7 +29,7 @@ from pyrogram.connection import Connection
 from pyrogram.crypto import mtproto
 from pyrogram.errors import (
     RPCError, InternalServerError, AuthKeyDuplicated, FloodWait, ServiceUnavailable, BadMsgNotification,
-    SecurityCheckMismatch
+    SecurityCheckMismatch, AuthKeyUnregistered
 )
 from pyrogram.raw.all import layer
 from pyrogram.raw.core import TLObject, MsgContainer, Int, FutureSalts
@@ -299,6 +299,11 @@ class Session:
             if packet is None or len(packet) == 4:
                 if packet:
                     error_code = -Int.read(BytesIO(packet))
+                    if error_code == 404:
+                        raise AuthKeyUnregistered(
+                            "Server sent transport error: %s (%s)",
+                            error_code, Session.TRANSPORT_ERRORS.get(error_code, "unknown error")
+                        )
 
                     log.warning(
                         "Server sent transport error: %s (%s)",

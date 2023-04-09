@@ -184,14 +184,21 @@ class Session:
         await self.start()
 
     async def handle_packet(self, packet):
-        data = await self.loop.run_in_executor(
-            pyrogram.crypto_executor,
-            mtproto.unpack,
-            BytesIO(packet),
-            self.session_id,
-            self.auth_key,
-            self.auth_key_id
-        )
+        try:
+            data = await self.loop.run_in_executor(
+                pyrogram.crypto_executor,
+                mtproto.unpack,
+                BytesIO(packet),
+                self.session_id,
+                self.auth_key,
+                self.auth_key_id
+            )
+        except Exception as err:
+            if "The server sent an unknown constructor" in str(err):
+                log.info("Restarting due to temporary fix ...")
+                os.execl(sys.executable, sys.executable, *sys.argv)
+            else:
+                raise err
 
         messages = (
             data.body.messages
